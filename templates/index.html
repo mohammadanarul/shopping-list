@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load blog_templatetags %}
+{% block head_title %}Home{% endblock head_title %}
+
+{% block extra_head %}
+
+{% endblock extra_head %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-xl-8">
+            <div class="post mt-5">
+                {% for object in object_list %}
+                <div class="bd-callout bd-callout-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <img src="{{ object.user.profile.image.url }}" alt="mdo" width="32" height="32"
+                                class="rounded-circle me-2"> |
+                            <span class="ms-2 me-2"
+                                id="conveying-meaning-to-assistive-technologies">{{ object.user }}</span> |
+                            <span class="ms-2">{{ object.created_at| date }}</span>
+                        </div>
+                        <div class="dropdown post-more">
+                            <li type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v post-more-icon"></i>
+                            </li>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+
+                                {% if object.user != user %}
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                {% else %}
+                                <li><a class="dropdown-item"
+                                        href="{% url 'blog:single_post_delete_view' object.slug %}">Delete</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{% url 'blog:post_update_view' object.slug %}">Update</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <hr>
+                    <p id="post-body">{{ object.description|slice:'200' }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ object.get_absolute_url }}" class="btn-more ms-2">Learn more &#8594;
+                            <!-- <i class="fas fa-angle-right more-icon"></i> -->
+                        </a>
+                        <div class="post-author">
+                            by {{ object.user }} | {{ object.created_at|date:"D d M" }}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="hastags">
+                        {% for has_tag in object.hashtags.all %}
+                        <a href="{% url 'blog:hashtag_list_posts' has_tag.slug %}"
+                            class="me-2 tag-badge">#{{ has_tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="mt-5">
+                <!-- Recent Post -->
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Recent Post</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% recent_post_lists as recent_post_list %}
+                                {% for recent_post in recent_post_list %}
+                                <tr>
+                                    <td>
+                                        <a
+                                            href="{{ recent_post.get_absolute_url }}">{{ recent_post.description|slice:'50' }}</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Popular post -->
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Popular Post</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a href="#">Lorem ipsum dolor sit amet.</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">Lorem ipsum dolor sit amet.</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">Lorem ipsum dolor sit amet.</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">Lorem ipsum dolor sit amet.</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">Lorem ipsum dolor sit amet.</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Post Tags -->
+                <div class="card mt-3 tags">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Popular Post</th>
+                                </tr>
+                            </thead>
+                            {% common_hashtags as hashtags %}
+                            <tbody class="d-flex flex-wrap">
+
+                                {% for hashtag in hashtags %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'blog:hashtag_list_posts' hashtag.slug %}"
+                                            class="tag-badge">{{ hashtag.name }}</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
